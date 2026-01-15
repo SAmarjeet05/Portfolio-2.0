@@ -45,7 +45,8 @@ export const LinksPage: React.FC = () => {
       if (!response.ok) {
         return;
       }
-      const data = await response.json();
+      const result = await response.json();
+      const data = result.data || result;
       setSettings({
         fullName: data.fullName || 'Your Name',
         profileImage: data.profileImage || '',

@@ -119,7 +119,7 @@ export const AdminLoginPage: React.FC = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_URL}/admin/auth/send-otp`, {
+      const response = await fetch(`${API_URL}/admin/auth?action=send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
