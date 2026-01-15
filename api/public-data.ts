@@ -1,12 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { connectDB } from '../lib/mongodb';
-import Blog from '../lib/models/Blog';
-import Certification from '../lib/models/Certification';
-import Experience from '../lib/models/Experience';
-import Gallery from '../lib/models/Gallery';
-import Project from '../lib/models/Project';
-import Settings from '../lib/models/Settings';
-import Tool from '../lib/models/Tool';
+import { connectDB } from '../lib/mongodb.js';
+import Blog from '../lib/models/Blog.js';
+import Certification from '../lib/models/Certification.js';
+import Experience from '../lib/models/Experience.js';
+import Gallery from '../lib/models/Gallery.js';
+import Project from '../lib/models/Project.js';
+import Settings from '../lib/models/Settings.js';
+import Tool from '../lib/models/Tool.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {

@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { connectDB } from '../lib/mongodb';
-import Visitor from '../lib/models/Visitor';
+import { connectDB } from '../lib/mongodb.js';
+import Visitor from '../lib/models/Visitor.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers
