@@ -9,7 +9,6 @@ interface AnalyticsConfig {
 export const useAnalytics = (config: AnalyticsConfig = {}) => {
   const { trackPageViews = true } = config;
   const location = useLocation();
-  const startTimeRef = useRef<number>(Date.now());
   const trackedRef = useRef<Set<string>>(new Set());
 
   // Track page views
@@ -40,11 +39,7 @@ export const useAnalytics = (config: AnalyticsConfig = {}) => {
           // Could not track visitor count
         });
     }
-
-    return () => {
-      // Track time on site on unmount (logic can be added here if needed)
-    };
-  }, [trackPageViews, location.pathname, config.trackTimeOnSite]);
+  }, [trackPageViews, location.pathname]);
 
   // Track scroll depth
   useEffect(() => {
