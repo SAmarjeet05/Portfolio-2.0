@@ -35,12 +35,7 @@ const itemVariants = {
   },
 };
 
-const iconMap = {
-  github: Github,
-  linkedin: Linkedin,
-  twitter: Twitter,
-  mail: Mail,
-};
+
 
 export const Contact: React.FC = () => {
   const [settings, setSettings] = useState<Settings>({

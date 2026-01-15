@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, Eye, EyeOff, Mail, Shield } from "lucide-react";
 import { Button } from "../components/ui/Button";
-import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const AdminLoginPage: React.FC = () => {

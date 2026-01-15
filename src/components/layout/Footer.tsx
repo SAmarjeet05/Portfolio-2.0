@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { VisitorCounter } from "../ui/VisitorCounter";
 
 export const Footer: React.FC = () => {
