@@ -111,7 +111,6 @@ export const GitHubActivity: React.FC = () => {
         setLoading(false);
         
       } catch (err: any) {
-        // Error occurred while fetching commits
         setError("Unable to load GitHub activity.");
         setLoading(false);
       }
@@ -250,60 +249,7 @@ export const GitHubActivity: React.FC = () => {
         )}
       </motion.div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          >
-            <GitCommit className="text-green-400" size={32} />
-          </motion.div>
-        </div>
-      ) : error ? (
-        <Card className="text-center py-12">
-          <p className="text-text-secondary">{error}</p>
-        </Card>
-      ) : (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="space-y-4"
-        >
-          {commits.length > 0 ? (
-            commits.map((commit, index) => (
-              <motion.div key={`${commit.sha}-${index}`} variants={itemVariants}>
-                <Card hoverable className="group">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-green-400/10 rounded-lg group-hover:bg-green-400/20 transition-smooth">
-                      <GitCommit className="text-green-400" size={20} />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="text-text-primary font-medium mb-1 truncate">
-                        {commit.message}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-text-secondary">
-                        <span className="font-mono text-green-400">{commit.sha}</span>
-                        <span className="truncate">{commit.repo}</span>
-                        <div className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          <span>{formatDate(commit.date)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))
-          ) : (
-            <Card className="text-center py-12">
-              <p className="text-text-secondary">No recent commits found</p>
-            </Card>
-          )}
-        </motion.div>
-      )}
+      {/* Commits section hidden - keeping only the calendar */}
     </SectionWrapper>
   );
 };
