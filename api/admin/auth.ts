@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { connectDB } from '../../lib/mongodb.js';
-import Settings from '../../lib/models/Settings.js';
+import { connectDB } from '../../lib/mongodb';
+import Settings from '../../lib/models/Settings';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
-import { OTP } from '../../lib/models/OTP.js';
+import { OTP } from '../../lib/models/OTP';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
