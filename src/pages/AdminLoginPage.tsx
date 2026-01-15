@@ -43,7 +43,7 @@ export const AdminLoginPage: React.FC = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_URL}/admin/auth/login`, {
+      const response = await fetch(`${API_URL}/admin/auth?action=login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
@@ -51,10 +51,10 @@ export const AdminLoginPage: React.FC = () => {
 
       const data = await response.json();
 
-      if (response.ok && data.requireOTP) {
+      if (response.ok && data.success) {
         // Password verified, send OTP
         setOtpSending(true);
-        const otpResponse = await fetch(`${API_URL}/admin/auth/send-otp`, {
+        const otpResponse = await fetch(`${API_URL}/admin/auth?action=send-otp`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -86,7 +86,7 @@ export const AdminLoginPage: React.FC = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_URL}/admin/auth/verify-otp`, {
+      const response = await fetch(`${API_URL}/admin/auth?action=verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ otp }),

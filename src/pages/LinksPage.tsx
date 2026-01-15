@@ -41,7 +41,7 @@ export const LinksPage: React.FC = () => {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/settings');
+      const response = await fetch('/api/public-data?type=settings');
       if (!response.ok) {
         return;
       }

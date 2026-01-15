@@ -22,9 +22,9 @@ export const TechStack: React.FC = () => {
 
   const fetchTools = async () => {
     try {
-      const response = await fetch('/api/tools?homepage=true');
+      const response = await fetch('/api/public-data?type=tools&homepage=true');
       const data = await response.json();
-      setTools(data);
+      setTools(data.data || data);
     } catch (error) {
       // Failed to fetch tools
     } finally {

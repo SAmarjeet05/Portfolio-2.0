@@ -19,7 +19,7 @@ export const fetchToolsForIcons = async (): Promise<Tool[]> => {
   }
 
   try {
-    const response = await fetch('/api/tools');
+    const response = await fetch('/api/public-data?type=tools');
     const data = await response.json();
     toolsCache = data;
     

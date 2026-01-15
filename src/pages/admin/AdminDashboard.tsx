@@ -56,12 +56,12 @@ export const AdminDashboard = () => {
       const headers = { 'Authorization': `Bearer ${token}` };
 
       const [projects, blogs, experience, certifications, tools, gallery] = await Promise.all([
-        fetch('/api/admin/projects', { headers }).then(r => r.json()),
-        fetch('/api/admin/blogs', { headers }).then(r => r.json()),
-        fetch('/api/admin/experience', { headers }).then(r => r.json()),
-        fetch('/api/admin/certifications', { headers }).then(r => r.json()),
-        fetch('/api/admin/tools', { headers }).then(r => r.json()),
-        fetch('/api/admin/gallery', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=projects', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=blogs', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=experience', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=certifications', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=tools', { headers }).then(r => r.json()),
+        fetch('/api/admin/content?type=gallery', { headers }).then(r => r.json()),
       ]);
 
       setStats({

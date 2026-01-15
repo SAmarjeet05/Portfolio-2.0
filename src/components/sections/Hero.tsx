@@ -50,12 +50,13 @@ export const Hero: React.FC = () => {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/settings');
+      const response = await fetch('/api/public-data?type=settings');
       if (!response.ok) {
         return;
       }
-      const data = await response.json();
-      // API returns data directly, not wrapped
+      const result = await response.json();
+      const data = result.data || result;
+      // API returns data wrapped in { success: true, data: {...} }
       setSettings({
         fullName: data.fullName || 'Your Name',
         tagline: data.tagline || 'Full Stack Developer',

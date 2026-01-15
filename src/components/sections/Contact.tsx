@@ -53,12 +53,13 @@ export const Contact: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/settings');
+      const response = await fetch('/api/public-data?type=settings');
       if (!response.ok) {
         return;
       }
-      const data = await response.json();
-      // API returns data directly, not wrapped
+      const result = await response.json();
+      const data = result.data || result;
+      // API returns data wrapped in { success: true, data: {...} }
       setSettings({
         email: data.email || 'contact@example.com',
         phone: data.phone || '',

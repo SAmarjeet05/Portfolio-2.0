@@ -140,7 +140,7 @@ function handleDevRequest(endpoint: string, options: RequestInit): Promise<Respo
 export const blogApi = {
   // Get all blogs
   getAll: async () => {
-    const response = await fetchWithAuth('/admin/blogs');
+    const response = await fetchWithAuth('/admin/content?type=blogs');
     if (!response.ok) {
       throw new Error('Failed to fetch blogs: ' + response.status);
     }
@@ -150,7 +150,7 @@ export const blogApi = {
 
   // Create new blog
   create: async (blog: any) => {
-    const response = await fetchWithAuth('/admin/blogs', {
+    const response = await fetchWithAuth('/admin/content?type=blogs', {
       method: 'POST',
       body: JSON.stringify(blog),
     });
@@ -160,7 +160,7 @@ export const blogApi = {
 
   // Update blog
   update: async (id: string, updates: any) => {
-    const response = await fetchWithAuth('/admin/blogs', {
+    const response = await fetchWithAuth('/admin/content?type=blogs', {
       method: 'PUT',
       body: JSON.stringify({ id, ...updates }),
     });
@@ -170,7 +170,7 @@ export const blogApi = {
 
   // Delete blog
   delete: async (id: string) => {
-    const response = await fetchWithAuth(`/admin/blogs?id=${id}`, {
+    const response = await fetchWithAuth(`/admin/content?type=blogs&id=${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete blog');
@@ -181,14 +181,14 @@ export const blogApi = {
 // Project API functions
 export const projectApi = {
   getAll: async () => {
-    const response = await fetchWithAuth('/admin/projects');
+    const response = await fetchWithAuth('/admin/content?type=projects');
     if (!response.ok) throw new Error('Failed to fetch projects');
     const result = await response.json();
     return result.data || result;
   },
 
   create: async (project: any) => {
-    const response = await fetchWithAuth('/admin/projects', {
+    const response = await fetchWithAuth('/admin/content?type=projects', {
       method: 'POST',
       body: JSON.stringify(project),
     });
@@ -198,7 +198,7 @@ export const projectApi = {
   },
 
   update: async (id: string, updates: any) => {
-    const response = await fetchWithAuth('/admin/projects', {
+    const response = await fetchWithAuth('/admin/content?type=projects', {
       method: 'PUT',
       body: JSON.stringify({ id, ...updates }),
     });
@@ -208,7 +208,7 @@ export const projectApi = {
   },
 
   delete: async (id: string) => {
-    const response = await fetchWithAuth(`/admin/projects?id=${id}`, {
+    const response = await fetchWithAuth(`/admin/content?type=projects&id=${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete project');
@@ -220,14 +220,14 @@ export const projectApi = {
 // Experience API functions
 export const experienceApi = {
   getAll: async () => {
-    const response = await fetchWithAuth('/admin/experience');
+    const response = await fetchWithAuth('/admin/content?type=experience');
     if (!response.ok) throw new Error('Failed to fetch experience');
     const result = await response.json();
     return result.data || result;
   },
 
   create: async (experience: any) => {
-    const response = await fetchWithAuth('/admin/experience', {
+    const response = await fetchWithAuth('/admin/content?type=experience', {
       method: 'POST',
       body: JSON.stringify(experience),
     });
@@ -237,7 +237,7 @@ export const experienceApi = {
   },
 
   update: async (id: string, updates: any) => {
-    const response = await fetchWithAuth('/admin/experience', {
+    const response = await fetchWithAuth('/admin/content?type=experience', {
       method: 'PUT',
       body: JSON.stringify({ id, ...updates }),
     });
@@ -247,7 +247,7 @@ export const experienceApi = {
   },
 
   delete: async (id: string) => {
-    const response = await fetchWithAuth(`/admin/experience?id=${id}`, {
+    const response = await fetchWithAuth(`/admin/content?type=experience&id=${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete experience');
@@ -259,14 +259,14 @@ export const experienceApi = {
 // Certification API functions
 export const certificationApi = {
   getAll: async () => {
-    const response = await fetchWithAuth('/admin/certifications');
+    const response = await fetchWithAuth('/admin/content?type=certifications');
     if (!response.ok) throw new Error('Failed to fetch certifications');
     const result = await response.json();
     return result.data || result;
   },
 
   create: async (certification: any) => {
-    const response = await fetchWithAuth('/admin/certifications', {
+    const response = await fetchWithAuth('/admin/content?type=certifications', {
       method: 'POST',
       body: JSON.stringify(certification),
     });
@@ -276,7 +276,7 @@ export const certificationApi = {
   },
 
   update: async (id: string, updates: any) => {
-    const response = await fetchWithAuth('/admin/certifications', {
+    const response = await fetchWithAuth('/admin/content?type=certifications', {
       method: 'PUT',
       body: JSON.stringify({ id, ...updates }),
     });
@@ -286,7 +286,7 @@ export const certificationApi = {
   },
 
   delete: async (id: string) => {
-    const response = await fetchWithAuth(`/admin/certifications?id=${id}`, {
+    const response = await fetchWithAuth(`/admin/content?type=certifications&id=${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete certification');
@@ -297,28 +297,28 @@ export const certificationApi = {
 
 // Public API functions (no auth required)
 export const fetchExperiences = async () => {
-  const response = await fetch(`${API_URL}/experience`);
+  const response = await fetch(`${API_URL}/public-data?type=experience`);
   if (!response.ok) throw new Error('Failed to fetch experiences');
   const result = await response.json();
   return result.data || result;
 };
 
 export const fetchBlogs = async () => {
-  const response = await fetch(`${API_URL}/blogs`);
+  const response = await fetch(`${API_URL}/public-data?type=blogs`);
   if (!response.ok) throw new Error('Failed to fetch blogs');
   const result = await response.json();
   return result.data || result;
 };
 
 export const fetchProjects = async () => {
-  const response = await fetch(`${API_URL}/projects`);
+  const response = await fetch(`${API_URL}/public-data?type=projects`);
   if (!response.ok) throw new Error('Failed to fetch projects');
   const result = await response.json();
   return result.data || result;
 };
 
 export const fetchCertifications = async () => {
-  const response = await fetch(`${API_URL}/certifications`);
+  const response = await fetch(`${API_URL}/public-data?type=certifications`);
   if (!response.ok) throw new Error('Failed to fetch certifications');
   const result = await response.json();
   return result.data || result;

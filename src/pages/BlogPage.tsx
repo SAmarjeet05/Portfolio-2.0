@@ -45,9 +45,10 @@ export const BlogPage: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch('/api/blogs');
-        const data = await response.json();
-        setBlogs(data);
+        const response = await fetch('/api/public-data?type=blogs');
+        const result = await response.json();
+        const data = result.data || result;
+        setBlogs(Array.isArray(data) ? data : []);
       } catch (error) {
         // Failed to fetch blogs
       } finally {

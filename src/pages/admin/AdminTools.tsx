@@ -19,14 +19,14 @@ interface Tool {
 // API functions
 const toolApi = {
   getAll: async () => {
-    const response = await fetch('/api/admin/tools', {
+    const response = await fetch('/api/admin/content?type=tools', {
       headers: { 'Authorization': `Bearer ${sessionStorage.getItem('admin_token')}` }
     });
     if (!response.ok) throw new Error('Failed to fetch tools');
     return response.json();
   },
   create: async (tool: any) => {
-    const response = await fetch('/api/admin/tools', {
+    const response = await fetch('/api/admin/content?type=tools', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const toolApi = {
     return response.json();
   },
   update: async (id: string, updates: any) => {
-    const response = await fetch('/api/admin/tools', {
+    const response = await fetch('/api/admin/content?type=tools', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const toolApi = {
     return response.json();
   },
   delete: async (id: string) => {
-    const response = await fetch(`/api/admin/tools?id=${id}`, {
+    const response = await fetch(`/api/admin/content?type=tools&id=${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${sessionStorage.getItem('admin_token')}` }
     });
@@ -83,7 +83,8 @@ export const AdminTools = () => {
   const fetchTools = async () => {
     try {
       setLoading(true);
-      const data = await toolApi.getAll();
+      const result = await toolApi.getAll();
+      const data = result.data || result;
       setTools(Array.isArray(data) ? data : []);
     } catch (error) {
       alert('Failed to load tools');

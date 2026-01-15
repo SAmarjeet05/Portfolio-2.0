@@ -17,7 +17,7 @@ interface GalleryItem {
 // API functions
 const galleryApi = {
   getAll: async () => {
-    const response = await fetch('/api/admin/gallery', {
+    const response = await fetch('/api/admin/content?type=gallery', {
       headers: { 'Authorization': `Bearer ${sessionStorage.getItem('admin_token')}` }
     });
     if (!response.ok) throw new Error('Failed to fetch gallery');
@@ -25,7 +25,7 @@ const galleryApi = {
     return data.data;
   },
   create: async (item: Omit<GalleryItem, '_id'>) => {
-    const response = await fetch('/api/admin/gallery', {
+    const response = await fetch('/api/admin/content?type=gallery', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const galleryApi = {
     return data.data;
   },
   update: async (item: GalleryItem) => {
-    const response = await fetch('/api/admin/gallery', {
+    const response = await fetch('/api/admin/content?type=gallery', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const galleryApi = {
     return data.data;
   },
   delete: async (id: string) => {
-    const response = await fetch(`/api/admin/gallery?id=${id}`, {
+    const response = await fetch(`/api/admin/content?type=gallery&id=${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${sessionStorage.getItem('admin_token')}` }
     });

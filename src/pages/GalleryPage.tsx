@@ -42,7 +42,7 @@ export const GalleryPage: React.FC = () => {
 
   const fetchGallery = async () => {
     try {
-      const response = await fetch('/api/gallery');
+      const response = await fetch('/api/public-data?type=gallery');
       if (response.ok) {
         const data = await response.json();
         setGallery(data.data);

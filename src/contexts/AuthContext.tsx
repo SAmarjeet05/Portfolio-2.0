@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Always use the real API endpoint (works in both dev and production now)
       const API_URL = import.meta.env.VITE_API_URL || '/api';
       
-      const response = await fetch(`${API_URL}/admin/auth/login`, {
+      const response = await fetch(`${API_URL}/admin/auth?action=login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

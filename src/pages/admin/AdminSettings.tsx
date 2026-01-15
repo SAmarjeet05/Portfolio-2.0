@@ -47,7 +47,7 @@ interface Certification {
 
 // Settings API functions
 async function getSettings() {
-  const response = await fetch('/api/admin/settings', {
+  const response = await fetch('/api/admin/content?type=settings', {
     headers: { 'Authorization': `Bearer ${sessionStorage.getItem('admin_token')}` }
   });
   if (!response.ok) throw new Error('Failed to fetch settings');
@@ -56,7 +56,7 @@ async function getSettings() {
 }
 
 async function updateSettings(settings: Settings) {
-  const response = await fetch('/api/admin/settings', {
+  const response = await fetch('/api/admin/content?type=settings', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

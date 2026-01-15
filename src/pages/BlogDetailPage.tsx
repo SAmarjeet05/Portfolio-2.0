@@ -36,7 +36,7 @@ const BlogDetailPage = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`/api/blogs?slug=${slug}`);
+        const response = await fetch(`/api/public-data?type=blogs&id=${slug}`);
         const data = await response.json();
         setBlog(data);
       } catch (error) {
