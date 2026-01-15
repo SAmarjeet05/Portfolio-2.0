@@ -42,9 +42,10 @@ export const useAnalytics = (config: AnalyticsConfig = {}) => {
     }
 
     return () => {
-      // Calculate time on site
+      // Track time on site on unmount
       if (config.trackTimeOnSite) {
-        const timeOnSite = Math.round((Date.now() - startTimeRef.current) / 1000);
+        // Time tracking logic can be added here if needed
+        const _timeOnSite = Math.round((Date.now() - startTimeRef.current) / 1000);
       }
     };
   }, [trackPageViews, location.pathname, config.trackTimeOnSite]);

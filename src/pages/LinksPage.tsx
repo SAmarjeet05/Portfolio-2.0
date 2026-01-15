@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, Coffee, Music, MessageCircle, FileText, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Twitter, Coffee, Music, MessageCircle, FileText, ExternalLink } from "lucide-react";
 import { SectionWrapper } from "../components/layout/SectionWrapper";
 
 interface Settings {

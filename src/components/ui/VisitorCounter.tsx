@@ -9,7 +9,7 @@ export const VisitorCounter: React.FC = () => {
   const location = useLocation();
   const { data, loading } = useVisitorCount(location.pathname);
   const sessionStats = useSessionTracker();
-  const [count, setCount] = useState<number>(0);
+  const [_count, setCount] = useState<number>(0);
   const [displayCount, setDisplayCount] = useState<number>(0);
 
   useEffect(() => {

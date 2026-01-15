@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Breadcrumb } from "../components/ui/Breadcrumb";
-import { Calendar, Briefcase, Code2 } from "lucide-react";
+import { Calendar, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/Button";
 import { useState, useEffect } from "react";

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Mail, MessageCircle, Github, Linkedin, Twitter, Coffee } from "lucide-react";
 import { SectionWrapper } from "../layout/SectionWrapper";
 import { Button } from "../ui/Button";
-import { sponsor } from "../../data/sponsor";
+
 import { SpotifyNowPlaying } from "./SpotifyNowPlaying";
 
 interface Settings {

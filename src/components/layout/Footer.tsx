@@ -1,16 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, Coffee } from "lucide-react";
-import { socials } from "../../data/socials";
-import { sponsor } from "../../data/sponsor";
+import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { VisitorCounter } from "../ui/VisitorCounter";
-
-const iconMap = {
-  github: Github,
-  linkedin: Linkedin,
-  twitter: Twitter,
-  mail: Mail,
-};
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();

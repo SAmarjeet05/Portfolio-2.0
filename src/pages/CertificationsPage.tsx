@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Breadcrumb } from "../components/ui/Breadcrumb";
 import { Badge } from "../components/ui/Badge";
 import { SectionWrapper } from "../components/layout/SectionWrapper";
-import { ExternalLink, Award } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { fetchCertifications } from "../utils/api";
 
 interface Certification {

@@ -173,7 +173,7 @@ export const AdminSettings = () => {
       const currentFeatured = project.featured || false;
       const newValue = !currentFeatured;
       const updatePayload = { featured: newValue };
-      const result = await projectApi.update(id, updatePayload);
+      await projectApi.update(id, updatePayload);
       // Refetch all projects to ensure consistency
       const updatedData = await projectApi.getAll();
       setProjects(Array.isArray(updatedData) ? updatedData : []);
@@ -193,7 +193,7 @@ export const AdminSettings = () => {
       const currentFeatured = exp.featured || false;
       const newValue = !currentFeatured;
       const updatePayload = { featured: newValue };
-      const result = await experienceApi.update(id, updatePayload);
+      await experienceApi.update(id, updatePayload);
       // Refetch all experiences to ensure consistency
       const updatedData = await experienceApi.getAll();
       setExperiences(Array.isArray(updatedData) ? updatedData : []);
@@ -213,7 +213,7 @@ export const AdminSettings = () => {
       const currentFeatured = cert.featured || false;
       const newValue = !currentFeatured;
       const updatePayload = { featured: newValue };
-      const result = await certificationApi.update(id, updatePayload);
+      await certificationApi.update(id, updatePayload);
       // Refetch all certifications to ensure consistency
       const updatedData = await certificationApi.getAll();
       setCertifications(Array.isArray(updatedData) ? updatedData : []);

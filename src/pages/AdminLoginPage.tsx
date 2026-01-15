@@ -14,7 +14,6 @@ export const AdminLoginPage: React.FC = () => {
   const [step, setStep] = useState<'password' | 'otp'>('password');
   const [maskedEmail, setMaskedEmail] = useState("");
   const [otpSending, setOtpSending] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

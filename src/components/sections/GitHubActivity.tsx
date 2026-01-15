@@ -1,123 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { GitCommit, Calendar, GitBranch } from "lucide-react";
+import { GitBranch } from "lucide-react";
 import { SectionWrapper } from "../layout/SectionWrapper";
 import { Card } from "../ui/Card";
 import { siteConfig } from "../../data/siteConfig";
 
-interface Commit {
-  sha: string;
-  message: string;
-  date: string;
-  author: string;
-  repo: string;
-}
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5 },
-  },
-};
-
 export const GitHubActivity: React.FC = () => {
-  const [commits, setCommits] = useState<Commit[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [showCalendar, setShowCalendar] = useState(true);
   const username = siteConfig.githubUsername;
-  const [calendarSrc, setCalendarSrc] = useState(
+  const [calendarSrc] = useState(
     `https://ghchart.rshah.org/10b981/${username}`
   );
   const [contributionCount, setContributionCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchCommits = async () => {
-      try {
-        const username = siteConfig.githubUsername;
-        
-        // Fetch user's recent events
-        const eventsResponse = await fetch(
-          `https://api.github.com/users/${username}/events?per_page=100`,
-          {
-            headers: {
-              'Accept': 'application/vnd.github.v3+json',
-            },
-          }
-        );
-
-        if (!eventsResponse.ok) {
-          if (eventsResponse.status === 403) {
-            setError("GitHub API rate limit reached. Please try again later.");
-          } else if (eventsResponse.status === 404) {
-            setError("GitHub user not found. Please check your username in settings.");
-          } else {
-            setError("Unable to fetch GitHub activity at this time.");
-          }
-          setLoading(false);
-          return;
-        }
-
-        const events = await eventsResponse.json();
-        
-        if (!Array.isArray(events)) {
-          setError("Unable to load commits.");
-          setLoading(false);
-          return;
-        }
-        
-        // Filter push events and extract commits (top 3)
-        const recentCommits: Commit[] = [];
-        
-        for (const event of events) {
-          if (event.type === "PushEvent" && event.payload?.commits) {
-            for (const commit of event.payload.commits) {
-              if (recentCommits.length < 3) {
-                recentCommits.push({
-                  sha: commit.sha.substring(0, 7),
-                  message: commit.message.split('\n')[0],
-                  date: event.created_at,
-                  author: event.actor?.login || username,
-                  repo: event.repo?.name || 'Unknown',
-                });
-              } else {
-                break;
-              }
-            }
-          }
-          if (recentCommits.length >= 3) break;
-        }
-
-        
-        if (recentCommits.length === 0) {
-          setError("No recent commits found. Push some code to see activity here!");
-        } else {
-          setCommits(recentCommits);
-        }
-        
-        setLoading(false);
-        
-      } catch (err: any) {
-        setError("Unable to load GitHub activity.");
-        setLoading(false);
-      }
-    };
-
-    fetchCommits();
-    
     // Fetch contribution count
     const fetchContributionCount = async () => {
       try {
@@ -133,12 +29,7 @@ export const GitHubActivity: React.FC = () => {
     };
     
     fetchContributionCount();
-    
-    // Refresh every 5 minutes
-    const interval = setInterval(fetchCommits, 5 * 60 * 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  }, [username]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

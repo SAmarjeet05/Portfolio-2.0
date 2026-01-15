@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FolderKanban, FileText, Briefcase, Award, TrendingUp, Wrench, Settings, Image } from 'lucide-react';
 import { Link } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from 'react-router-dom';
 import { Breadcrumb } from "../components/ui/Breadcrumb";
 import { ArrowLeft, Calendar, Clock, User, Tag, ExternalLink, Check, Copy } from "lucide-react";
 import { motion } from "framer-motion";
