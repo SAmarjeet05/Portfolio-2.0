@@ -9,7 +9,7 @@ const getAuthToken = (): string | null => {
 };
 
 // Mock data for development mode
-const mockData = {
+const mockData: { [key: string]: any[] } = {
   blogs: [],
   projects: [],
   experience: [],
@@ -81,7 +81,7 @@ function handleDevRequest(endpoint: string, options: RequestInit): Promise<Respo
           // Get single item by ID or slug
           const params = new URLSearchParams(queryString);
           const id = params.get('id') || params.get('slug');
-          responseData = mockData[resource].find(item => 
+          responseData = mockData[resource].find((item: any) => 
             item._id === id || item.slug === id
           ) || null;
           if (!responseData) status = 404;
@@ -102,7 +102,7 @@ function handleDevRequest(endpoint: string, options: RequestInit): Promise<Respo
         status = 201;
       } else if (method === 'PUT') {
         // Update item
-        const index = mockData[resource].findIndex(item => item._id === body.id);
+        const index = mockData[resource].findIndex((item: any) => item._id === body.id);
         if (index >= 0) {
           mockData[resource][index] = {
             ...mockData[resource][index],
@@ -118,7 +118,7 @@ function handleDevRequest(endpoint: string, options: RequestInit): Promise<Respo
         // Delete item
         const params = new URLSearchParams(queryString || '');
         const id = params.get('id');
-        const index = mockData[resource].findIndex(item => item._id === id);
+        const index = mockData[resource].findIndex((item: any) => item._id === id);
         if (index >= 0) {
           mockData[resource].splice(index, 1);
           responseData = { success: true };
@@ -142,7 +142,6 @@ export const blogApi = {
   getAll: async () => {
     const response = await fetchWithAuth('/admin/blogs');
     if (!response.ok) {
-      const errorText = await response.text();
       throw new Error('Failed to fetch blogs: ' + response.status);
     }
     const data = await response.json();
