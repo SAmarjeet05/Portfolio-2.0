@@ -46,12 +46,11 @@ export const TechStack: React.FC = () => {
     return null;
   }
   
-  // Divide tools into 4 equal groups for 4 mobile lines
-  const toolsPerLine = Math.ceil(tools.length / 4);
+  // Divide tools into 3 equal groups for 3 mobile lines
+  const toolsPerLine = Math.ceil(tools.length / 3);
   const line1Tools = tools.slice(0, toolsPerLine);
   const line2Tools = tools.slice(toolsPerLine, toolsPerLine * 2);
-  const line3Tools = tools.slice(toolsPerLine * 2, toolsPerLine * 3);
-  const line4Tools = tools.slice(toolsPerLine * 3);
+  const line3Tools = tools.slice(toolsPerLine * 2);
   
   // Create many duplicates for truly seamless scrolling without visible restart
   // The more duplicates, the longer before restart is visible
@@ -66,7 +65,6 @@ export const TechStack: React.FC = () => {
   const duplicatedLine1 = createSeamlessArray(line1Tools);
   const duplicatedLine2 = createSeamlessArray(line2Tools);
   const duplicatedLine3 = createSeamlessArray(line3Tools);
-  const duplicatedLine4 = createSeamlessArray(line4Tools);
   const duplicatedAllTools = createSeamlessArray(tools);
 
   return (
@@ -166,47 +164,43 @@ export const TechStack: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* MOBILE VIEW - 4 lines */}
-          <div className="md:hidden space-y-3">
-            {/* Back Line 1 (top back, moving right to left) */}
+          {/* MOBILE VIEW - 3 simple horizontal lines with different speeds */}
+          <div className="md:hidden space-y-4">
+            {/* Line 1 - Moving left to right (slow) */}
             <motion.div
-              className="flex gap-3 opacity-30 blur-[1px]"
-              style={{ 
-                transform: "rotateX(8deg) translateZ(-30px) scale(0.95)",
-                transformStyle: "preserve-3d",
-              }}
+              className="flex gap-3"
               animate={{
-                x: [-8000, 0],
+                x: [0, -8000],
               }}
               transition={{
                 x: {
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration: 80,
+                  duration: 60,
                   ease: "linear",
                 },
               }}
             >
               {duplicatedLine1.map((tool, index) => (
                 <div
-                  key={`mobile-back1-${tool.name}-${index}`}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-dark-700/50 backdrop-blur-sm rounded-xl border border-accent-primary/10 whitespace-nowrap"
+                  key={`mobile-line1-${tool.name}-${index}`}
+                  className="flex items-center gap-2 px-3 py-2 bg-dark-800/90 backdrop-blur-sm rounded-xl border border-accent-primary/40 whitespace-nowrap"
                 >
-                  <img src={tool.logo} alt={tool.name} className="w-4 h-4 object-contain flex-shrink-0" />
-                  <span className="font-medium text-gray-400 text-[10px] truncate">
+                  <img 
+                    src={tool.logo} 
+                    alt={tool.name} 
+                    className="w-5 h-5 object-contain flex-shrink-0" 
+                  />
+                  <span className="font-medium text-white text-xs">
                     {tool.name}
                   </span>
                 </div>
               ))}
             </motion.div>
 
-            {/* Back Line 2 (second back, moving right to left) */}
+            {/* Line 2 - Moving right to left (medium) */}
             <motion.div
-              className="flex gap-3 opacity-30 blur-[1px]"
-              style={{ 
-                transform: "rotateX(8deg) translateZ(-30px) scale(0.95)",
-                transformStyle: "preserve-3d",
-              }}
+              className="flex gap-3"
               animate={{
                 x: [-8000, 0],
               }}
@@ -214,31 +208,31 @@ export const TechStack: React.FC = () => {
                 x: {
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration: 90,
+                  duration: 75,
                   ease: "linear",
                 },
               }}
             >
               {duplicatedLine2.map((tool, index) => (
                 <div
-                  key={`mobile-back2-${tool.name}-${index}`}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-dark-700/50 backdrop-blur-sm rounded-xl border border-accent-primary/10 whitespace-nowrap"
+                  key={`mobile-line2-${tool.name}-${index}`}
+                  className="flex items-center gap-2 px-3 py-2 bg-dark-800/90 backdrop-blur-sm rounded-xl border border-accent-primary/40 whitespace-nowrap"
                 >
-                  <img src={tool.logo} alt={tool.name} className="w-4 h-4 object-contain flex-shrink-0" />
-                  <span className="font-medium text-gray-400 text-[10px] truncate">
+                  <img 
+                    src={tool.logo} 
+                    alt={tool.name} 
+                    className="w-5 h-5 object-contain flex-shrink-0" 
+                  />
+                  <span className="font-medium text-white text-xs">
                     {tool.name}
                   </span>
                 </div>
               ))}
             </motion.div>
 
-            {/* Front Line 1 (first front, moving left to right) */}
+            {/* Line 3 - Moving left to right (fast) */}
             <motion.div
               className="flex gap-3"
-              style={{ 
-                transform: "rotateX(5deg) translateZ(30px)",
-                transformStyle: "preserve-3d",
-              }}
               animate={{
                 x: [0, -8000],
               }}
@@ -246,66 +240,22 @@ export const TechStack: React.FC = () => {
                 x: {
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration: 80,
+                  duration: 50,
                   ease: "linear",
                 },
               }}
             >
               {duplicatedLine3.map((tool, index) => (
                 <div
-                  key={`mobile-front1-${tool.name}-${index}`}
-                  className="flex items-center gap-2 px-3 py-2 bg-dark-800/90 backdrop-blur-sm rounded-xl border border-accent-primary/40 hover:border-accent-primary/70 hover:shadow-xl hover:shadow-accent-primary/30 transition-all whitespace-nowrap group cursor-pointer"
-                  style={{
-                    transform: "translateZ(20px)",
-                    minWidth: "fit-content"
-                  }}
+                  key={`mobile-line3-${tool.name}-${index}`}
+                  className="flex items-center gap-2 px-3 py-2 bg-dark-800/90 backdrop-blur-sm rounded-xl border border-accent-primary/40 whitespace-nowrap"
                 >
                   <img 
                     src={tool.logo} 
                     alt={tool.name} 
-                    className="w-5 h-5 object-contain flex-shrink-0 group-hover:scale-110 transition-transform" 
+                    className="w-5 h-5 object-contain flex-shrink-0" 
                   />
-                  <span className="font-medium text-white text-xs truncate max-w-[120px]">
-                    {tool.name}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Front Line 2 (second front, moving left to right) */}
-            <motion.div
-              className="flex gap-3"
-              style={{ 
-                transform: "rotateX(5deg) translateZ(30px)",
-                transformStyle: "preserve-3d",
-              }}
-              animate={{
-                x: [0, -8000],
-              }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 90,
-                  ease: "linear",
-                },
-              }}
-            >
-              {duplicatedLine4.map((tool, index) => (
-                <div
-                  key={`mobile-front2-${tool.name}-${index}`}
-                  className="flex items-center gap-2 px-3 py-2 bg-dark-800/90 backdrop-blur-sm rounded-xl border border-accent-primary/40 hover:border-accent-primary/70 hover:shadow-xl hover:shadow-accent-primary/30 transition-all whitespace-nowrap group cursor-pointer"
-                  style={{
-                    transform: "translateZ(20px)",
-                    minWidth: "fit-content"
-                  }}
-                >
-                  <img 
-                    src={tool.logo} 
-                    alt={tool.name} 
-                    className="w-5 h-5 object-contain flex-shrink-0 group-hover:scale-110 transition-transform" 
-                  />
-                  <span className="font-medium text-white text-xs truncate max-w-[120px]">
+                  <span className="font-medium text-white text-xs">
                     {tool.name}
                   </span>
                 </div>

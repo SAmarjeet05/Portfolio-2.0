@@ -111,11 +111,11 @@ export const ProjectsPage: React.FC = () => {
                   <div className="group bg-gradient-to-b from-dark-800/90 via-dark-800/60 to-black rounded-2xl overflow-hidden border border-accent-primary/30 hover:border-accent-primary/60 transition-all hover:shadow-xl hover:shadow-accent-primary/20 relative">
                     <div className="flex flex-col md:flex-row">
                       {/* Image Section */}
-                      <div className="md:w-2/5 relative overflow-hidden">
+                      <div className="md:w-2/5 relative overflow-hidden h-64 md:h-[450px] flex-shrink-0">
                         <img
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/50" />
                         {/* Bottom blackish gradient overlay on image */}
