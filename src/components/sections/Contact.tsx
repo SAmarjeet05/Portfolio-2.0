@@ -104,9 +104,10 @@ export const Contact: React.FC = () => {
             <Button
               variant="primary"
               size="lg"
-              onClick={() =>
-                window.open(`mailto:${settings.email}`, "_blank")
-              }
+              onClick={() => {
+                // Use Gmail compose URL for better cross-platform compatibility
+                window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${settings.email}`, '_blank');
+              }}
             >
               <Mail size={20} className="mr-2" />
               Send me an email
