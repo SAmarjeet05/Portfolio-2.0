@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Portfolio Banner](https://via.placeholder.com/1200x400/1a1a2e/00d4ff?text=Portfolio+2.0)
+![Portfolio Banner](https://amarjeetsingh.vercel.app/1200x400/1a1a2e/00d4ff?text=Portfolio+2.0)
 
 **A production-ready, full-stack portfolio solution for developers and creators**
 
