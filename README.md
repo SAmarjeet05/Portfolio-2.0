@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Portfolio Banner](https://amarjeetsingh.vercel.app/1200x400/1a1a2e/00d4ff?text=Portfolio+2.0)
+<!--[Portfolio Banner](https://amarjeetsingh.vercel.app/1200x400/1a1a2e/00d4ff?text=Portfolio+2.0)-->
 
 **A production-ready, full-stack portfolio solution for developers and creators**
 
@@ -427,7 +427,7 @@ This project exists thanks to all the people who contributed:
         <sub><b>Pradeep Kumar Awasthi</b></sub>
       </a>
       <br />
-      <sub>Contributor</sub>
+      <sub>Lead Developer</sub>
     </td>
   </tr>
 </table>
