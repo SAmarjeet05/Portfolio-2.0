@@ -37,7 +37,29 @@ export const ExploringPreview = () => {
   }, []);
 
   if (loading) {
-    return null;
+    return (
+      <SectionWrapper id="exploring-preview">
+        <div className="animate-pulse">
+          <div className="mb-12">
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-64 mb-4"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-96"></div>
+          </div>
+          <div className="max-w-6xl space-y-4 mb-12">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-effect p-5 rounded-xl border-2 border-dark-700">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded mt-1"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-64 mx-auto"></div>
+          </div>
+        </div>
+      </SectionWrapper>
+    );
   }
 
   if (items.length === 0) {
