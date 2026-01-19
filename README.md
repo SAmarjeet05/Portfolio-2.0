@@ -61,6 +61,7 @@ Unlike static portfolios or template sites, Portfolio 2.0 is a **full-stack appl
 - **Experience** - Professional work history timeline
 - **Certifications** - Display of professional certifications
 - **Blog** - Full-featured blog with markdown support and code highlighting
+- **Currently Exploring** - Dynamic section showing active learning topics and areas of focus
 - **Gallery** - Image gallery for showcasing work/photos
 - **Contact** - Multiple ways to connect (Email, WhatsApp, Social links)
 - **Spotify Integration** - Real-time now playing widget
@@ -72,7 +73,7 @@ Unlike static portfolios or template sites, Portfolio 2.0 is a **full-stack appl
 - **REST API** - Built with Vercel serverless functions
 - **Secure Authentication** - JWT-based admin authentication with 2FA support
 - **Admin Dashboard** - Full CRUD operations for all content
-- **Content Management** - Manage blogs, projects, experience, certifications, tools, and gallery
+- **Content Management** - Manage blogs, projects, experience, certifications, tools, exploring, and gallery
 - **Settings Management** - Configure site-wide settings from admin panel
 - **Protected Routes** - Secure admin-only sections
 
@@ -276,6 +277,9 @@ Portfolio-2.0/
 
    # Add demo tools
    node add-demo-tools.cjs
+
+   # Add demo exploring items
+   node add-demo-exploring.cjs
    ```
 
 8. **Run the development server**
@@ -382,6 +386,7 @@ To enable the "Now Playing" widget:
 - `GET /api/public-data?type=tools` - Get tech stack tools
 - `GET /api/public-data?type=gallery` - Get gallery images
 - `GET /api/public-data?type=settings` - Get site settings
+- `GET /api/exploring?limit={number}` - Get active exploring items (optional limit)
 - `POST /api/visitor` - Track visitor
 
 ### Admin Endpoints (Protected)
@@ -390,6 +395,11 @@ To enable the "Now Playing" widget:
 - `POST /api/admin/content?type={type}` - Create content
 - `PUT /api/admin/content?type={type}` - Update content
 - `DELETE /api/admin/content?type={type}&id={id}` - Delete content
+- `GET /api/admin/exploring` - Get all exploring items
+- `POST /api/admin/exploring` - Create exploring item
+- `PUT /api/admin/exploring` - Update exploring item
+- `DELETE /api/admin/exploring?id={id}` - Delete exploring item
+- `PATCH /api/admin/exploring` - Toggle exploring item active status
 
 ## 🤝 Contributing
 
