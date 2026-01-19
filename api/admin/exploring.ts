@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { connectDB } from '../../lib/mongodb';
-import { Exploring } from '../../lib/models/Exploring';
-import { verifyAuth } from '../../lib/auth';
+import { connectDB } from '../../lib/mongodb.js';
+import { Exploring } from '../../lib/models/Exploring.js';
+import { verifyAuth } from '../../lib/auth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
