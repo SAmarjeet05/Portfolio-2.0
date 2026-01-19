@@ -88,8 +88,7 @@ export const Projects: React.FC = () => {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         className="space-y-6 mb-12"
       >
         {loading ? (
