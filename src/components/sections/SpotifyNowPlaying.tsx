@@ -143,13 +143,13 @@ export const SpotifyNowPlaying: React.FC = () => {
           </div>
 
           {/* Animated Sound Bars */}
-          <div className="flex gap-1 mt-3">
+          <div className="flex gap-1 mt-3 items-end h-6">
             {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
                 className="w-1 bg-accent-primary rounded-full"
                 animate={{
-                  height: ["8px", "20px", "8px"],
+                  height: ["4px", "16px", "4px"],
                 }}
                 transition={{
                   duration: 1,
