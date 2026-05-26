@@ -70,7 +70,7 @@ export const Contact: React.FC = () => {
         twitter: data.twitter || '',
         buyMeACoffee: data.buyMeACoffee || '',
       });
-    } catch (error) {
+    } catch{
       // Error occurred while fetching settings
     } finally {
       setLoading(false);
@@ -241,8 +241,18 @@ export const Contact: React.FC = () => {
           {settings.email && (
             <motion.a
               href={`mailto:${settings.email}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                // Detect if user is on mobile device
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                  // On mobile, use mailto: to open native email app
+                  window.location.href = `mailto:${settings.email}`;
+                } else {
+                  // On desktop, open Gmail compose in new tab
+                  window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${settings.email}`, '_blank');
+                }
+              }}
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.2, rotate: 0 }}

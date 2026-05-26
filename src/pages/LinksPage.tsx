@@ -60,7 +60,7 @@ export const LinksPage: React.FC = () => {
         spotify: data.spotify,
         buyMeACoffee: data.buyMeACoffee,
       });
-    } catch (error) {
+    } catch{
       // Error occurred while fetching settings
     } finally {
       setLoading(false);
@@ -158,16 +158,6 @@ export const LinksPage: React.FC = () => {
           >
             {settings.fullName}
           </motion.h1>
-
-          {/* Bio */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-text-secondary max-w-md mx-auto"
-          >
-            {settings.bio}
-          </motion.p>
         </motion.div>
 
         {/* Links Grid */}

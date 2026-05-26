@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Music, ExternalLink } from "lucide-react";
 
-interface SpotifyTrack {
+interface LastFmTrack {
   isPlaying: boolean;
   title?: string;
   artist?: string;
@@ -12,19 +12,23 @@ interface SpotifyTrack {
 }
 
 export const SpotifyNowPlaying: React.FC = () => {
-  const [track, setTrack] = useState<SpotifyTrack>({ isPlaying: false });
+  const [track, setTrack] = useState<LastFmTrack>({ isPlaying: false });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchNowPlaying();
+    const fetchTrack = () => {
+      fetchNowPlaying();
+    };
+
+    fetchTrack();
     // Refresh every 30 seconds
-    const interval = setInterval(fetchNowPlaying, 30000);
+    const interval = setInterval(fetchTrack, 30000);
     return () => clearInterval(interval);
   }, []);
 
   const fetchNowPlaying = async () => {
     try {
-      const response = await fetch('/api/spotify/now-playing');
+      const response = await fetch('/api/lastfm/current');
       if (!response.ok) {
         setTrack({ isPlaying: false });
         setLoading(false);
@@ -32,8 +36,8 @@ export const SpotifyNowPlaying: React.FC = () => {
       }
       const data = await response.json();
       setTrack(data);
-    } catch (error) {
-      // Error occurred while fetching Spotify data
+    } catch {
+      // Error occurred while fetching Last.fm data
       setTrack({ isPlaying: false });
     } finally {
       setLoading(false);
@@ -131,7 +135,7 @@ export const SpotifyNowPlaying: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-shrink-0 text-accent-primary hover:text-accent-light transition-colors"
-                title="Listen on Spotify"
+                title="Listen on Last.fm"
               >
                 <ExternalLink size={18} />
               </a>
