@@ -239,7 +239,6 @@ export const AboutPage: React.FC = () => {
                     transition={{ delay: 0.5 + idx * 0.1 }}
                     className="flex items-start gap-3 text-gray-300 p-3 rounded-lg hover:bg-dark-900/50 transition-colors"
                   >
-                    <span className="text-accent-primary mt-1">🏆</span>
                     <span>{achievement}</span>
                   </motion.li>
                 ))}

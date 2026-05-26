@@ -16,6 +16,7 @@ interface Project {
   github: string;
   live: string;
   image: string;
+  tagImage?: string;
   featured: boolean;
   status: 'completed' | 'in-progress' | 'planning';
 }
@@ -58,7 +59,7 @@ export const ProjectsPage: React.FC = () => {
         await fetchToolsForIcons();
         const data = await fetchProjects();
         setProjects(data);
-      } catch (error) {
+      } catch{
         // Failed to fetch projects
       } finally {
         setLoading(false);
@@ -136,7 +137,7 @@ export const ProjectsPage: React.FC = () => {
                       {/* Image Section */}
                       <div className="md:w-2/5 relative overflow-hidden h-64 md:h-[450px] flex-shrink-0">
                         <img
-                          src={project.image}
+                          src={project.tagImage || project.image}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />

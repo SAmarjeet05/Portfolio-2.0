@@ -1,11 +1,19 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Breadcrumb } from "../components/ui/Breadcrumb";
-import { ExternalLink, Github, Calendar, Users } from "lucide-react";
+import { ExternalLink, Github, Calendar, Users, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/Button";
+import { ImageCarousel } from "../components/ui/ImageCarousel";
 import { fetchProjects } from "../utils/api";
 import { fetchToolsForIcons, getTechLogo } from "../utils/techIcons";
+import { parseTimeline } from "../utils/timelineParser";
+
+interface Contributor {
+  name: string;
+  github?: string;
+  linkedin?: string;
+}
 
 interface Project {
   _id: string;
@@ -16,8 +24,12 @@ interface Project {
   github: string;
   live: string;
   image: string;
+  images?: string[];
+  tagImage?: string;
   featured: boolean;
   status: 'completed' | 'in-progress' | 'planning';
+  timeline?: string;
+  contributors?: Contributor[];
 }
 
 const ProjectDetailPage = () => {
@@ -126,32 +138,18 @@ const ProjectDetailPage = () => {
           ]} 
         />
 
-        {/* 1. Gallery/Image Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mt-8 mb-12"
-        >
-          <div className="relative rounded-2xl overflow-hidden border border-accent-primary/30">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-[500px] object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">{project.title}</h1>
-            </div>
-          </div>
-        </motion.div>
+        {/* 1. Gallery/Image Section - Using Carousel */}
+        <ImageCarousel 
+          images={[project.image, ...(project.images || [])]}
+          title={project.title}
+        />
 
         {/* 2. Tools Used (No Heading) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="mb-12"
+          className="mt-16 mb-16"
         >
           <div className="flex flex-wrap gap-3 justify-center">
             {project.tech.map((tech) => (
@@ -193,17 +191,19 @@ const ProjectDetailPage = () => {
               <Github size={18} />
               View on GitHub
             </Button>
-            <Button
-              as="a"
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="outline"
-              className="flex items-center gap-2 border-accent-primary/50 hover:bg-accent-primary/10"
-            >
-              <ExternalLink size={18} />
-              Live Demo
-            </Button>
+            {project.live && (
+              <Button
+                as="a"
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+                className="flex items-center gap-2 border-accent-primary/50 hover:bg-accent-primary/10"
+              >
+                <ExternalLink size={18} />
+                Live Demo
+              </Button>
+            )}
           </div>
         </motion.div>
 
@@ -233,11 +233,11 @@ const ProjectDetailPage = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Started</span>
-                <span className="text-white">Jan 2024</span>
+                <span className="text-white">{parseTimeline(project.timeline || '').startedDate}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Duration</span>
-                <span className="text-white">3 months</span>
+                <span className="text-white">{parseTimeline(project.timeline || '').duration}</span>
               </div>
             </div>
           </motion.div>
@@ -254,7 +254,8 @@ const ProjectDetailPage = () => {
               Contributors
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-dark-900/50 rounded-lg">
+              {/* Hardcoded First Contributor */}
+              <div className="flex items-center justify-between p-3 bg-dark-900/50 rounded-lg hover:bg-dark-900/70 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-neon-purple flex items-center justify-center text-white font-bold">
                     A
@@ -269,12 +270,41 @@ const ProjectDetailPage = () => {
                     <Github size={18} className="text-gray-400 hover:text-white" />
                   </a>
                   <a href="https://linkedin.com/in/amarjeet-singh" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-dark-800 rounded-lg transition-colors">
-                    <svg className="w-[18px] h-[18px] text-gray-400 hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
+                    <Linkedin size={18} className="text-gray-400 hover:text-white" />
                   </a>
                 </div>
               </div>
+
+              {/* Dynamic Contributors from Project Data */}
+              {project.contributors && project.contributors.length > 0 && (
+                project.contributors.map((contributor, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 bg-dark-900/50 rounded-lg hover:bg-dark-900/70 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-neon-purple flex items-center justify-center text-white font-bold">
+                        {contributor.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="font-medium text-white">{contributor.name}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      {contributor.github && (
+                        <a href={contributor.github} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-dark-800 rounded-lg transition-colors">
+                          <Github size={18} className="text-gray-400 hover:text-white" />
+                        </a>
+                      )}
+                      {contributor.linkedin && (
+                        <a href={contributor.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-dark-800 rounded-lg transition-colors">
+                          <Linkedin size={18} className="text-gray-400 hover:text-white" />
+                        </a>
+                      )}
+                      {!contributor.github && !contributor.linkedin && (
+                        <span className="text-xs text-gray-500 px-2 py-1">No links</span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </motion.div>
         </div>

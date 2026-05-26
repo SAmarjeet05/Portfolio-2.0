@@ -12,8 +12,10 @@ export interface IProject extends Document {
   keyFeatures: string[];
   tech: string[];
   github: string;
-  live: string;
+  live?: string;
   image: string;
+  images?: string[];
+  tagImage?: string;
   featured?: boolean;
   status: 'completed' | 'in-progress' | 'planning';
   timeline?: string;
@@ -35,8 +37,10 @@ const ProjectSchema = new Schema<IProject>(
     keyFeatures: [{ type: String }],
     tech: [{ type: String }],
     github: { type: String, required: true },
-    live: { type: String, required: true },
+    live: { type: String },
     image: { type: String, required: true },
+    images: [{ type: String }],
+    tagImage: { type: String },
     featured: { type: Boolean, default: false, required: false },
     status: { 
       type: String, 

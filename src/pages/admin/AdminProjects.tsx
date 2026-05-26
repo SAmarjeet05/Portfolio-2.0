@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Search, X, Save, ExternalLink, Github, Linkedin, UserPlus } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, X, Save, ExternalLink, Github, Linkedin, UserPlus, Image } from 'lucide-react';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { ProtectedRoute } from '../../components/admin/ProtectedRoute';
 import { Button } from '../../components/ui/Button';
@@ -21,6 +21,8 @@ interface Project {
   github: string;
   live: string;
   image: string;
+  images?: string[];
+  tagImage?: string;
   featured: boolean;
   status: 'completed' | 'in-progress' | 'planning';
   timeline?: string;
@@ -43,6 +45,8 @@ export const AdminProjects = () => {
     github: '',
     live: '',
     image: '',
+    images: [],
+    tagImage: '',
     featured: false,
     status: 'in-progress',
     timeline: '',
@@ -53,6 +57,7 @@ export const AdminProjects = () => {
   const [contributorName, setContributorName] = useState('');
   const [contributorGithub, setContributorGithub] = useState('');
   const [contributorLinkedin, setContributorLinkedin] = useState('');
+  const [projectImageInput, setProjectImageInput] = useState('');
 
   useEffect(() => {
     fetchProjects();
@@ -94,6 +99,7 @@ export const AdminProjects = () => {
     setFormData(project);
     setFeaturesInput(project.keyFeatures.join('\n'));
     setTechInput(project.tech.join(', '));
+    setProjectImageInput('');
     setShowModal(true);
   };
 
@@ -107,6 +113,8 @@ export const AdminProjects = () => {
       github: '',
       live: '',
       image: '',
+      images: [],
+      tagImage: '',
       featured: false,
       status: 'in-progress',
       timeline: '',
@@ -117,6 +125,7 @@ export const AdminProjects = () => {
     setContributorName('');
     setContributorGithub('');
     setContributorLinkedin('');
+    setProjectImageInput('');
     setShowModal(true);
   };
 
@@ -143,6 +152,23 @@ export const AdminProjects = () => {
     setFormData({
       ...formData,
       contributors: formData.contributors.filter((_, i) => i !== index)
+    });
+  };
+
+  const addProjectImage = () => {
+    if (projectImageInput.trim()) {
+      setFormData({
+        ...formData,
+        images: [...(formData.images || []), projectImageInput.trim()]
+      });
+      setProjectImageInput('');
+    }
+  };
+
+  const removeProjectImage = (index: number) => {
+    setFormData({
+      ...formData,
+      images: (formData.images || []).filter((_, i) => i !== index)
     });
   };
 
@@ -252,10 +278,12 @@ export const AdminProjects = () => {
                            className="p-1.5 hover:bg-dark-700 rounded transition-colors text-text-secondary hover:text-white">
                           <Github size={14} />
                         </a>
-                        <a href={project.live} target="_blank" rel="noopener noreferrer"
-                           className="p-1.5 hover:bg-dark-700 rounded transition-colors text-text-secondary hover:text-white">
-                          <ExternalLink size={14} />
-                        </a>
+                        {project.live && (
+                          <a href={project.live} target="_blank" rel="noopener noreferrer"
+                             className="p-1.5 hover:bg-dark-700 rounded transition-colors text-text-secondary hover:text-white">
+                            <ExternalLink size={14} />
+                          </a>
+                        )}
                       </div>
                     </div>
 
@@ -380,14 +408,13 @@ export const AdminProjects = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Live Demo URL *</label>
+                      <label className="block text-sm font-medium mb-2">Live Demo URL</label>
                       <input
                         type="url"
                         value={formData.live}
                         onChange={(e) => handleInputChange('live', e.target.value)}
                         placeholder="https://..."
                         className="w-full px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg focus:outline-none focus:border-accent-primary"
-                        required
                       />
                     </div>
                   </div>
@@ -403,6 +430,72 @@ export const AdminProjects = () => {
                       required
                     />
                     <p className="text-xs text-text-tertiary mt-1">Upload to ImgBB and paste direct link</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Tag (Main) Image URL</label>
+                    <input
+                      type="url"
+                      value={formData.tagImage || ''}
+                      onChange={(e) => handleInputChange('tagImage', e.target.value)}
+                      placeholder="https://i.ibb.co/... (displayed on home & projects page)"
+                      className="w-full px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg focus:outline-none focus:border-accent-primary"
+                    />
+                    <p className="text-xs text-text-tertiary mt-1">Card image shown on project listings (if empty, uses project image)</p>
+                  </div>
+
+                  {/* Additional Project Images */}
+                  <div className="border border-dark-700 rounded-lg p-4 bg-dark-800/50">
+                    <label className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Image size={16} className="text-accent-primary" />
+                      Additional Project Images (for carousel)
+                    </label>
+                    
+                    {/* Add Image Form */}
+                    <div className="space-y-3 mb-3">
+                      <input
+                        type="url"
+                        value={projectImageInput}
+                        onChange={(e) => setProjectImageInput(e.target.value)}
+                        placeholder="https://i.ibb.co/... (Image 2, 3, etc.)"
+                        className="w-full px-4 py-2 bg-dark-900 border border-dark-700 rounded-lg focus:outline-none focus:border-accent-primary text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={addProjectImage}
+                        className="px-4 py-2 bg-accent-primary/20 text-accent-primary rounded-lg hover:bg-accent-primary/30 transition-colors text-sm font-medium flex items-center gap-2"
+                      >
+                        <Plus size={14} />
+                        Add Image
+                      </button>
+                    </div>
+
+                    {/* Images List */}
+                    {formData.images && formData.images.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs text-text-tertiary mb-2">Added Images: ({formData.images.length})</p>
+                        {formData.images.map((image, index) => (
+                          <div key={index} className="flex items-center justify-between bg-dark-900 p-3 rounded-lg group">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{index + 2}. {image}</p>
+                            </div>
+                            <div className="flex gap-2 ml-2">
+                              <a href={image} target="_blank" rel="noopener noreferrer" 
+                                 className="p-1.5 text-xs text-text-secondary hover:text-accent-primary transition-colors opacity-0 group-hover:opacity-100">
+                                Preview
+                              </a>
+                              <button
+                                type="button"
+                                onClick={() => removeProjectImage(index)}
+                                className="p-1.5 hover:bg-red-500/20 text-red-400 rounded transition-colors"
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div>
