@@ -24,21 +24,6 @@ const monthMap: { [key: string]: number } = {
   december: 12,
 };
 
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 export const parseTimeline = (timeline: string): TimelineData => {
   if (!timeline) {
     return { startedDate: 'N/A', duration: 'N/A' };
