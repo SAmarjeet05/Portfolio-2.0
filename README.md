@@ -42,7 +42,7 @@ Building a portfolio from scratch is time-consuming, and using no-code platforms
 
 Unlike static portfolios or template sites, Portfolio 2.0 is a **full-stack application** with a powerful admin panel. Update your content, add new projects, write blog posts, and manage everything through a beautiful interface - no code deployment needed!
 
-**Zero downtime updates** • **SEO optimized** • **Markdown blog support** • **Real-time Spotify integration** • **2FA security** • **Mobile-first design**
+**Zero downtime updates** • **SEO optimized** • **Markdown blog support** • **Real-time Last.fm integration** • **2FA security** • **Mobile-first design**
 
 ## ✨ Features
 
@@ -64,7 +64,7 @@ Unlike static portfolios or template sites, Portfolio 2.0 is a **full-stack appl
 - **Currently Exploring** - Dynamic section showing active learning topics and areas of focus
 - **Gallery** - Image gallery for showcasing work/photos
 - **Contact** - Multiple ways to connect (Email, WhatsApp, Social links)
-- **Spotify Integration** - Real-time now playing widget
+- **Last.fm Integration** - Real-time now playing widget with animated visualizer
 - **GitHub Activity** - Display recent GitHub contributions
 - **Visitor Analytics** - Real-time visitor counter and statistics
 
@@ -115,8 +115,8 @@ Portfolio-2.0/
 │   │   ├── auth.ts              # Authentication endpoints
 │   │   └── content.ts           # Content management CRUD
 │   ├── auth/                    # Authentication utilities
-│   ├── spotify/                 # Spotify integration
-│   │   └── now-playing.ts      # Current playing track
+│   ├── lastfm/                  # Last.fm integration
+│   │   └── current.ts          # Current playing track
 │   ├── public-data.ts          # Public API for fetching content
 │   └── visitor.ts              # Visitor tracking endpoint
 ├── lib/                         # Backend utilities
@@ -217,10 +217,9 @@ Portfolio-2.0/
    SMTP_USER=your-email@gmail.com
    SMTP_PASS=your-app-password
 
-   # Spotify Integration (Optional)
-   SPOTIFY_CLIENT_ID=your-spotify-client-id
-   SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
-   SPOTIFY_REFRESH_TOKEN=your-refresh-token
+   # Last.fm Integration (For currently playing widget)
+   LASTFM_API_KEY=your-lastfm-api-key
+   LASTFM_USERNAME=your-lastfm-username
    ```
 
 4. **Generate security secrets**
@@ -351,7 +350,9 @@ Make sure to set these in Vercel:
 - `ADMIN_PASSWORD_HASH` - Hashed admin password
 - `VITE_ADMIN_PASSWORD` - Plain admin password (for frontend)
 - `VITE_SITE_URL` - Your production URL
-- All other optional variables (Spotify, SMTP, etc.)
+- `LASTFM_API_KEY` - Last.fm API key
+- `LASTFM_USERNAME` - Last.fm username
+- All other optional variables (SMTP, etc.)
 
 ## 🔒 Security Features
 
@@ -362,19 +363,48 @@ Make sure to set these in Vercel:
 - **CORS Configuration** - Proper cross-origin resource sharing
 - **Environment Variables** - Sensitive data kept in env files
 
-## 📱 Spotify Integration (Optional)
+## 🎵 Last.fm Integration
 
-To enable the "Now Playing" widget:
+To enable the "Currently Vibing To" widget with real-time music tracking:
 
-1. Create a Spotify app at [developer.spotify.com](https://developer.spotify.com/dashboard)
-2. Get your Client ID and Client Secret
-3. Generate a refresh token using the Spotify OAuth flow
-4. Add credentials to `.env.local`:
+### Setup Steps
+
+1. **Connect Spotify to Last.fm**
+   - Go to [Last.fm Connected Applications](https://www.last.fm/settings/applications)
+   - Find and authorize Spotify to scrobble your listening activity
+   - Last.fm will now automatically track every song you play on Spotify
+
+2. **Get Your Last.fm Username**
+   - Visit your Last.fm profile: `https://www.last.fm/user/YOUR_USERNAME`
+   - Save your username
+
+3. **Get Last.fm API Key**
+   - Go to [Last.fm API](https://www.last.fm/api)
+   - Create or register an app
+   - Copy your **API Key**
+
+4. **Add to Environment Variables**
+   
+   Update `.env.local`:
    ```env
-   SPOTIFY_CLIENT_ID=your-client-id
-   SPOTIFY_CLIENT_SECRET=your-client-secret
-   SPOTIFY_REFRESH_TOKEN=your-refresh-token
+   LASTFM_API_KEY=your-api-key
+   LASTFM_USERNAME=your-username
    ```
+
+5. **Features**
+   - ✅ Real-time music widget displays currently playing track
+   - ✅ Album art with 4-bar animated visualizer
+   - ✅ Shows "Currently Listening" when actively playing
+   - ✅ Shows "Last Played" when not playing
+   - ✅ Auto-refreshes every 30 seconds
+   - ✅ Clickable link to Last.fm track
+
+### Production Deployment
+When deploying to Vercel, add these environment variables:
+- `LASTFM_API_KEY` - Your Last.fm API key
+- `LASTFM_USERNAME` - Your Last.fm username
+
+The widget will gracefully degrade if credentials are not provided.
 
 ## 📊 API Endpoints
 
@@ -387,6 +417,7 @@ To enable the "Now Playing" widget:
 - `GET /api/public-data?type=gallery` - Get gallery images
 - `GET /api/public-data?type=settings` - Get site settings
 - `GET /api/exploring?limit={number}` - Get active exploring items (optional limit)
+- `GET /api/lastfm/current` - Get currently playing Last.fm track
 - `POST /api/visitor` - Track visitor
 
 ### Admin Endpoints (Protected)
