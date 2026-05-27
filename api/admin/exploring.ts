@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ force: true });
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { connectDB } from '../../lib/mongodb.js';
 import { Exploring } from '../../lib/models/Exploring.js';
@@ -36,7 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 // GET - List all exploring items (including inactive)
 async function handleGet(req: VercelRequest, res: VercelResponse) {
   try {
-    const items = await Exploring.find().sort({ order: 1 }).lean();
+    const items = await Exploring.find().sort({ order: -1 }).lean();
     return res.status(200).json({
       success: true,
       data: items,
@@ -50,17 +53,21 @@ async function handleGet(req: VercelRequest, res: VercelResponse) {
 // POST - Create new exploring item
 async function handlePost(req: VercelRequest, res: VercelResponse) {
   try {
-    const { title, description, isActive, order } = req.body;
+    const { title, description, isActive } = req.body;
 
     if (!title) {
       return res.status(400).json({ error: 'Title is required' });
     }
 
+    // Auto-increment order: find the highest order and add 1
+    const lastItem = await Exploring.findOne().sort({ order: -1 }).lean();
+    const nextOrder = (lastItem?.order || 0) + 1;
+
     const newItem = await Exploring.create({
       title,
       description: description || undefined,
       isActive: isActive !== undefined ? isActive : true,
-      order: order !== undefined ? order : 0,
+      order: nextOrder,
     });
 
     return res.status(201).json({

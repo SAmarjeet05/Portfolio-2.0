@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Lock, Eye, EyeOff, Mail, Shield } from "lucide-react";
+import { Lock, Eye, EyeOff, Mail, Shield, AlertCircle } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import { hashOTP, protectConsoleFromOTP, sanitizeErrorMessage, clearSensitiveData, initializeOTPProtection } from "../utils/otpSecurity";
 
 export const AdminLoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
@@ -13,9 +14,26 @@ export const AdminLoginPage: React.FC = () => {
   const [step, setStep] = useState<'password' | 'otp'>('password');
   const [maskedEmail, setMaskedEmail] = useState("");
   const [otpSending, setOtpSending] = useState(false);
+  const [showOtpWarning, setShowOtpWarning] = useState(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initialize comprehensive OTP security protections at app start
+    initializeOTPProtection();
+    protectConsoleFromOTP();
+
+    // Prevent copying OTP input value
+    const preventOtpCopy = (e: ClipboardEvent) => {
+      if (otpInputRef.current && document.activeElement === otpInputRef.current) {
+        e.preventDefault();
+        setShowOtpWarning(true);
+        setTimeout(() => setShowOtpWarning(false), 3000);
+      }
+    };
+
+    document.addEventListener('copy', preventOtpCopy);
+
     // Check if user has the special access flag
     // If they do, redirect to dashboard (already logged in)
     const adminAccess = sessionStorage.getItem('admin_access_granted');
@@ -34,6 +52,12 @@ export const AdminLoginPage: React.FC = () => {
         sessionStorage.removeItem('admin_access_granted');
       }
     }
+
+    // Cleanup: Clear sensitive data on unmount
+    return () => {
+      clearSensitiveData({ password, otp });
+      document.removeEventListener('copy', preventOtpCopy);
+    };
   }, [navigate]);
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -52,6 +76,10 @@ export const AdminLoginPage: React.FC = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        // Clear password from memory immediately
+        clearSensitiveData({ password });
+        setPassword('');
+
         // Password verified, send OTP
         setOtpSending(true);
         const otpResponse = await fetch(`${API_URL}/admin/auth?action=send-otp`, {
@@ -67,10 +95,10 @@ export const AdminLoginPage: React.FC = () => {
           setMaskedEmail(otpData.email);
           setError("");
         } else {
-          setError(otpData.error || 'Failed to send OTP');
+          setError(sanitizeErrorMessage(otpData.error || 'Failed to send OTP'));
         }
       } else {
-        setError(data.error || "Invalid password");
+        setError(sanitizeErrorMessage(data.error || "Invalid password"));
       }
     } catch (err) {
       setError("Connection error. Please try again.");
@@ -86,27 +114,48 @@ export const AdminLoginPage: React.FC = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_URL || '/api';
+      
+      // Hash the OTP before sending (never send plain OTP)
+      const otpHash = await hashOTP(otp);
+
       const response = await fetch(`${API_URL}/admin/auth?action=verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ otp }),
+        body: JSON.stringify({ otpHash }),
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      // Debug logs (sanitized)
+      console.log('🔐 OTP Verification Response:');
+      console.log('- Status:', response.status);
+      console.log('- Success:', data.success);
+      console.log('- Has Token:', !!data.token);
+      console.log('- Expires In:', data.expiresIn, 'seconds');
+
+      if (response.ok && data.success && data.token) {
         // Store token and mark as logged in
         const expiry = Date.now() + (data.expiresIn * 1000);
         sessionStorage.setItem('admin_token', data.token);
         sessionStorage.setItem('admin_expiry', expiry.toString());
         sessionStorage.setItem('admin_access_granted', 'true');
         
+        console.log('✅ Token stored successfully');
+        console.log('- SessionStorage Keys:', Object.keys(sessionStorage).filter(k => k.includes('admin')));
+        
+        // Clear OTP from memory
+        setOtp('');
+        clearSensitiveData({ otp });
+        
         // Force auth context update by reloading
         window.location.href = '/admin/dashboard';
       } else {
-        setError(data.error || "Invalid OTP");
+        const errorMsg = data.error || "Invalid OTP";
+        console.error('❌ OTP Verification failed:', errorMsg);
+        setError(sanitizeErrorMessage(errorMsg));
       }
     } catch (err) {
+      console.error('❌ OTP Submit Error:', err);
       setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
@@ -132,7 +181,7 @@ export const AdminLoginPage: React.FC = () => {
         setError("OTP resent successfully!");
         setTimeout(() => setError(""), 3000);
       } else {
-        setError(data.error || 'Failed to resend OTP');
+        setError(sanitizeErrorMessage(data.error || 'Failed to resend OTP'));
       }
     } catch (err) {
       setError("Connection error. Please try again.");
@@ -231,6 +280,18 @@ export const AdminLoginPage: React.FC = () => {
             </form>
           ) : (
             <form onSubmit={handleOTPSubmit} className="space-y-6">
+              {/* OTP Warning */}
+              {showOtpWarning && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-amber-400 text-sm flex items-start gap-2"
+                >
+                  <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+                  <span>OTP cannot be copied for security. Please type it manually.</span>
+                </motion.div>
+              )}
+
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -249,6 +310,7 @@ export const AdminLoginPage: React.FC = () => {
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={20} />
                   <input
+                    ref={otpInputRef}
                     id="otp"
                     type="text"
                     value={otp}
@@ -264,6 +326,10 @@ export const AdminLoginPage: React.FC = () => {
                     required
                     disabled={loading}
                     maxLength={6}
+                    autoComplete="off"
+                    spellCheck="false"
+                    autoCorrect="off"
+                    autoCapitalize="off"
                   />
                 </div>
                 <p className="text-xs text-text-tertiary mt-2 text-center">

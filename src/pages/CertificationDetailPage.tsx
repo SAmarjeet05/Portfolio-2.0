@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Breadcrumb } from "../components/ui/Breadcrumb";
-import { Calendar, Award, ExternalLink, Clock, Target, CheckCircle2 } from "lucide-react";
+import { Calendar, Award, ExternalLink, Clock, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/Button";
 import { useState, useEffect } from "react";
@@ -33,7 +33,7 @@ const CertificationDetailPage = () => {
         const data = await fetchCertifications();
         const foundCert = data.find((c: Certification) => c._id === id);
         setCert(foundCert || null);
-      } catch (error) {
+      } catch {
         // Error occurred while fetching certification
         setCert(null);
       } finally {
@@ -262,10 +262,9 @@ const CertificationDetailPage = () => {
               target="_blank"
               rel="noopener noreferrer"
               variant="primary"
-              className="group"
-            >
-              <CheckCircle2 size={18} />
-              View Credential / Verification
+              className="group flex items-center justify-center gap-2"
+            > 
+              View Credential
               <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform" />
             </Button>
           </motion.div>

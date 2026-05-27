@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ force: true });
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { connectDB } from '../lib/mongodb.js';
 import Blog from '../lib/models/Blog.js';

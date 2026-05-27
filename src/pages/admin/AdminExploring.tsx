@@ -23,7 +23,6 @@ export const AdminExploring = () => {
     title: '',
     description: '',
     isActive: true,
-    order: 0,
   });
 
   useEffect(() => {
@@ -33,26 +32,42 @@ export const AdminExploring = () => {
   const fetchItems = async () => {
     try {
       const token = sessionStorage.getItem('admin_token');
-      console.log('Fetching with token:', token ? 'Token exists' : 'No token');
+      
+      // Debug logging
+      console.log('📋 Fetching Exploring Items:');
+      console.log('- Token Present:', !!token);
+      console.log('- Token Length:', token?.length || 0);
+      console.log('- Admin Access Flag:', sessionStorage.getItem('admin_access_granted'));
+      console.log('- Admin Expiry:', sessionStorage.getItem('admin_expiry'));
+      
+      if (!token) {
+        console.error('❌ No token found in sessionStorage. User needs to login.');
+        setLoading(false);
+        return;
+      }
       
       const response = await fetch('/api/admin/exploring', {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
       
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Response data:', data);
+      console.log('📡 API Response:');
+      console.log('- Status:', response.status);
+      console.log('- Status Text:', response.statusText);
       
-      if (data.success) {
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
         setItems(data.data);
-        console.log('Items set:', data.data.length);
+        console.log('✅ Items fetched successfully:', data.data.length);
       } else {
-        console.error('API returned success=false:', data.error);
+        console.error('❌ API Error:', data.error);
+        console.error('💡 If 401: Token verification failed. Check JWT_SECRET environment variable.');
       }
     } catch (error) {
-      console.error('Error fetching exploring items:', error);
+      console.error('❌ Error fetching exploring items:', error);
     } finally {
       setLoading(false);
     }
@@ -98,7 +113,6 @@ export const AdminExploring = () => {
       title: item.title,
       description: item.description || '',
       isActive: item.isActive,
-      order: item.order,
     });
   };
 
@@ -158,7 +172,6 @@ export const AdminExploring = () => {
       title: '',
       description: '',
       isActive: true,
-      order: 0,
     });
   };
 
@@ -349,42 +362,31 @@ export const AdminExploring = () => {
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium mb-2">Order</label>
-                          <input
-                            type="number"
-                            value={formData.order}
-                            onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
-                            className="w-full px-4 py-3 bg-dark-800 border border-dark-600 rounded-lg focus:border-accent-primary focus:outline-none"
-                            min="1"
-                          />
-                          <p className="text-xs text-text-secondary mt-1">Lower numbers appear first</p>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Status</label>
+                        <div className="flex items-center gap-6">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              checked={formData.isActive}
+                              onChange={() => setFormData({ ...formData, isActive: true })}
+                              className="w-4 h-4"
+                            />
+                            <span>Active</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              checked={!formData.isActive}
+                              onChange={() => setFormData({ ...formData, isActive: false })}
+                              className="w-4 h-4"
+                            />
+                            <span>Inactive</span>
+                          </label>
                         </div>
-
-                        <div>
-                          <label className="block text-sm font-medium mb-2">Status</label>
-                          <div className="flex items-center gap-4 mt-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="radio"
-                                checked={formData.isActive}
-                                onChange={() => setFormData({ ...formData, isActive: true })}
-                                className="w-4 h-4"
-                              />
-                              <span>Active</span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="radio"
-                                checked={!formData.isActive}
-                                onChange={() => setFormData({ ...formData, isActive: false })}
-                                className="w-4 h-4"
-                              />
-                              <span>Inactive</span>
-                            </label>
-                          </div>
-                        </div>
+                        <p className="text-xs text-text-secondary mt-3">
+                          💡 Order is automatically assigned. Items appear in order of creation.
+                        </p>
                       </div>
 
                       <div className="flex gap-3 pt-4">

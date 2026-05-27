@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ force: true });
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { connectDB } from '../lib/mongodb.js';
 import { Exploring } from '../lib/models/Exploring.js';
@@ -13,8 +16,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Parse limit query parameter
     const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : undefined;
 
-    // Query only active items, sorted by order
-    let query = Exploring.find({ isActive: true }).sort({ order: 1 });
+    // Query only active items, sorted by order (highest to lowest)
+    let query = Exploring.find({ isActive: true }).sort({ order: -1 });
 
     if (limit && limit > 0) {
       query = query.limit(limit);

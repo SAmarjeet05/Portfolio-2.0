@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ force: true });
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const {
