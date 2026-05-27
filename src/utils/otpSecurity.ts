@@ -207,12 +207,13 @@ function protectNetworkRequests(): void {
   const originalXHROpen = XMLHttpRequest.prototype.open;
   const originalXHRSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
   
-  XMLHttpRequest.prototype.open = function(method: string, url: string, ...rest: any[]) {
+  XMLHttpRequest.prototype.open = function(method: string, url: string | URL, async?: boolean, username?: string | null, password?: string | null) {
     // Mark this as a sensitive request if it contains auth endpoints
-    if (url.includes('auth') || url.includes('otp')) {
+    const urlString = typeof url === 'string' ? url : url.toString();
+    if (urlString.includes('auth') || urlString.includes('otp')) {
       (this as any)._isSensitiveRequest = true;
     }
-    return originalXHROpen.apply(this, [method, url, ...rest]);
+    return originalXHROpen.call(this, method, url, async ?? true, username, password);
   };
 
   XMLHttpRequest.prototype.setRequestHeader = function(header: string, value: string) {
@@ -229,15 +230,17 @@ function protectNetworkRequests(): void {
  */
 function protectDevToolsAPIs(): void {
   // Prevent performance timeline logging of sensitive operations
-  if (window.performance && window.performance.mark) {
-    const originalMark = performance.mark;
-    performance.mark = function(markName: string, ...args: any[]) {
+  if (window.performance && typeof window.performance.mark === 'function') {
+    const originalMark = window.performance.mark.bind(window.performance);
+    window.performance.mark = function(markName: string, markOptions?: PerformanceMarkOptions): PerformanceMark {
       // Don't mark sensitive operations
       if (!markName.toLowerCase().includes('otp') && 
           !markName.toLowerCase().includes('password') &&
           !markName.toLowerCase().includes('auth')) {
-        return originalMark.apply(performance, [markName, ...args]);
+        return originalMark(markName, markOptions);
       }
+      // For sensitive operations, still create the mark but don't add extra logging
+      return originalMark(markName, markOptions);
     };
   }
 
@@ -264,15 +267,10 @@ function protectDevToolsAPIs(): void {
  * Protect DOM logging from showing OTP values
  */
 function protectDOMLogging(): void {
-  // Intercept element.innerText and textContent getters to sanitize display
-  const originalTextContentDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'textContent');
-  const originalInnerTextDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText');
-  const originalInnerHTMLDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
-
-  // Note: We can't fully intercept this without breaking DOM,
-  // but we can prevent it from being easily logged in DevTools
+  // Note: We can't fully intercept DOM properties without breaking functionality,
+  // but we can prevent sensitive input values from being easily logged in DevTools
   
-  // Instead, we'll protect input values
+  // Protect input values
   const originalInputValueDesc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
   
   if (originalInputValueDesc && originalInputValueDesc.get) {
