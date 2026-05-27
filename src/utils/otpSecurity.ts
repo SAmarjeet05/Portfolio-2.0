@@ -3,9 +3,6 @@
  * Comprehensive protection against OTP exposure in console, DevTools, network tabs, and storage
  */
 
-// Store OTP values for protection (using WeakMap for memory efficiency)
-const protectedOTPs = new WeakSet<object>();
-const otpPattern = /\b\d{4,6}\b/g; // Match 4-6 digit numbers (generic OTP pattern)
 const sensitiveFields = ['otp', 'otpCode', 'otpHash', 'token', 'password', 'secret'];
 
 /**
@@ -165,9 +162,9 @@ export function protectConsoleFromOTP(): void {
     originalTable.apply(console, [maskOTPInObject(data), columns]);
   };
 
-  // NOTE: We do NOT call protectJSONStringify() here because it would mask
-  // sensitive data in actual network requests. Console logging is already
-  // protected by the filterArguments function above.
+  // NOTE: Console logging is protected by the filterArguments function above.
+  // We do NOT intercept JSON.stringify as it would mask sensitive data in
+  // actual network requests.
 
   // Protect network requests
   protectNetworkRequests();
@@ -180,39 +177,28 @@ export function protectConsoleFromOTP(): void {
 }
 
 /**
- * Intercept JSON.stringify to prevent OTP exposure
- */
-function protectJSONStringify(): void {
-  const originalStringify = JSON.stringify;
-  
-  JSON.stringify = function(value: any, replacer?: any, space?: any): string {
-    const masked = maskOTPInObject(value);
-    return originalStringify.call(JSON, masked, replacer, space);
-  };
-}
-
-/**
  * Protect network requests from logging OTP
  */
 function protectNetworkRequests(): void {
   // Intercept Fetch API
   const originalFetch = window.fetch;
   
-  window.fetch = async function(...args: any[]) {
+  window.fetch = async function(input: RequestInfo | URL, init?: RequestInit) {
     // Don't log fetch arguments to prevent OTP exposure
-    const response = await originalFetch.apply(window, args);
+    const response = await originalFetch.call(window, input, init);
     
     // Create a proxy response to prevent logging
     return new Proxy(response, {
-      get(target, prop) {
-        if (prop === 'json' && typeof target[prop as any] === 'function') {
+      get(target: Response, prop: PropertyKey) {
+        const targetProp = target[prop as keyof Response] as any;
+        if (prop === 'json' && typeof targetProp === 'function') {
           return async function() {
-            const data = await target[prop as any].call(target);
+            const data = await targetProp.call(target);
             // Don't log the response data
             return data;
           };
         }
-        return target[prop as any];
+        return targetProp;
       }
     });
   };
